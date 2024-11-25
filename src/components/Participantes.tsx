@@ -2,17 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, Save, X } from "lucide-react";
 
 const Participantes = () => {
-  const [participantes, setParticipantes] = useState<string[]>([]);
+  const [participantes, setParticipantes] = useState<string[]>(() => {
+    const stored = localStorage.getItem("participantes");
+    return stored ? JSON.parse(stored) : [];
+  });
   const [nuevoParticipante, setNuevoParticipante] = useState("");
   const [editando, setEditando] = useState<number | null>(null);
   const [participanteEditado, setParticipanteEditado] = useState("");
-
-  useEffect(() => {
-    const stored = localStorage.getItem("participantes");
-    if (stored) {
-      setParticipantes(JSON.parse(stored));
-    }
-  }, []);
 
   useEffect(() => {
     localStorage.setItem("participantes", JSON.stringify(participantes));
@@ -21,7 +17,7 @@ const Participantes = () => {
   const agregarParticipante = (e: React.FormEvent) => {
     e.preventDefault();
     if (nuevoParticipante.trim()) {
-      setParticipantes([...participantes, nuevoParticipante.trim()]);
+      setParticipantes((prev) => [...prev, nuevoParticipante.trim()]);
       setNuevoParticipante("");
     }
   };
